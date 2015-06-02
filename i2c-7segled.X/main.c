@@ -34,9 +34,13 @@ volatile unsigned char * const ports[] = {
     &PORTA, &PORTB, &PORTC
 };
 
-//unsigned char fonts[] = {
-//  0x
-//};
+unsigned char font_digits[] = {
+    // 0     1     2     3     4     5     6     7     8     9
+    0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x27, 0x7F, 0x6F
+};
+
+unsigned char font_alphabet[] = {
+};
 
 void segment_off(unsigned char place) {
     *ports[cathodes[place].port] &= ~(1U<<cathodes[place].num);
@@ -62,18 +66,14 @@ void segment_on(unsigned char place, unsigned char bits) {
     *ports[cathodes[place].port] |= (1<<cathodes[place].num);
 }
 
-// 1MHz : 1/1,000,000=1us
-// 4サイクル必要なので
-// 1us*4 = 4us
-// 1*1000*1000/4us = 250,000 = 250K
+void segment_put(unsigned char place, char c) {
+    if ('0' <= c && c <= '9') {
+        segment_on(place, font_digits[c - '0']);
+    }
+}
+
 void main(void) {
     OSCCON = 0x52;      // 4MHZ
-//	REFCON0 = 0xB0;//FVR*4
-//	INTCON2bits.RABPU = 1;
-
-//	UCONbits.USBEN = 0;
-//	IOCAbits.IOCA0 = 1;
-//	IOCAbits.IOCA1 = 1;
 
     // ポートA,B,Cを出力に設定する
     TRISA = 0;
@@ -85,29 +85,12 @@ void main(void) {
 	ANSELH = 0;
 	ANSEL = 0;
 
-//    //RC0 = 1;
-//    //RC1 = RC2 = RB5 = 1;
-//    RC2 = 1;
-//
-//    while(1) {
-//        RA5 = RC5 = RC3 = RC7 = RB7 = RA4 = RC4 = RC6 = 1;
-//        Delay10KTCYx(100);
-//        RA5 = RC5 = RC3 = RC7 = RB7 = RA4 = RC4 = RC6 = 0;
-//        Delay10KTCYx(100);
-//    }
+    segment_off(0);
     while(1) {
-        segment_off(0);
-        Delay10KTCYx(100);
-        //segment_on(0, 0x3F); // 0
-        //segment_on(0, 0x06); // 1
-        segment_on(0, 0x5B); // 2
-        //segment_on(0, 0x4F); // 3
-        //segment_on(0, 0x66); // 4
-        //segment_on(0, 0x6D); // 5
-        //segment_on(0, 0x7D); // 6
-        //segment_on(0, 0x27); // 7
-        //segment_on(0, 0x7F); // 8
-        //segment_on(0, 0x6F); // 9
-        Delay10KTCYx(100);
+        unsigned char i;
+        for (i=0; i<=9; i++) {
+            segment_put(0, '0' + i);
+            Delay10KTCYx(100);
+        }
     }
 }
