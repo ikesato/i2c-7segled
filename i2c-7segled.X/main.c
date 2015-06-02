@@ -39,7 +39,17 @@ unsigned char font_digits[] = {
   0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x27, 0x7F, 0x6F
 };
 
-unsigned char font_alphabet[] = {
+unsigned char font_alphabet_upper[] = {
+  // A    B    C    d    E    F    G    H    I    J    K    L    M    N    O
+  0x77,0x7F,0x39,0x5E,0x79,0x71,0x3D,0x76,0x06,0x1E,0x7A,0x38,0x15,0x37,0x3F,
+
+  // P    q    R    S    T    U    V    W    X    y    Z
+  0x73,0x67,0x33,0x6D,0x07,0x3E,0x3E,0x7E,0x76,0x6E,0x5B
+};
+
+unsigned char font_alphabet_lower[] = {
+  // A    b    C    d    E    F    G    h
+  0x77,0x7C,0x39,0x5e,0x79,0x71,0x3D,0x74
 };
 
 void segment_off(unsigned char place) {
@@ -69,6 +79,10 @@ void segment_on(unsigned char place, unsigned char bits) {
 void segment_put(unsigned char place, char c) {
   if ('0' <= c && c <= '9') {
     segment_on(place, font_digits[c - '0']);
+  } else if ('A' <= c && c <= 'Z') {
+    segment_on(place, font_alphabet_upper[c - 'A']);
+  } else if ('a' <= c && c <= 'z') {
+    segment_on(place, font_alphabet_lower[c - 'a']);
   }
 }
 
@@ -85,10 +99,15 @@ void main(void) {
 
   segment_off(0);
   while(1) {
-    unsigned char i;
-    for (i=0; i<=9; i++) {
-      segment_put(0, '0' + i);
-      Delay10KTCYx(100);
-    }
+    segment_put(0, 'H');
+    Delay10KTCYx(100);
+    segment_put(0, 'E');
+    Delay10KTCYx(100);
+    segment_put(0, 'L');
+    Delay10KTCYx(100);
+    segment_put(0, 'L');
+    Delay10KTCYx(100);
+    segment_put(0, 'O');
+    Delay10KTCYx(100);
   }
 }
