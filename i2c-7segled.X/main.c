@@ -74,8 +74,6 @@ void segment_put(unsigned char place, char c) {
 
 void main(void) {
   OSCCON = 0x52;      // 4MHZ
-
-  // ポートA,B,Cを出力に設定する
   TRISA = 0;
   TRISB = 0;
   TRISC = 0;
