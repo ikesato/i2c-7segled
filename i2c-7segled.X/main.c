@@ -39,17 +39,23 @@ unsigned char font_digits[] = {
   0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x27, 0x7F, 0x6F
 };
 
+// *  switch case
+// -- most difficult
+// -  more iffy
 unsigned char font_alphabet_upper[] = {
-  // A    B    C    d    E    F    G    H    I    J    K    L    M    N    O
+  //A  B-   C    d*   E    F    G    H    I    J    K--  L    M--  N-   O
   0x77,0x7F,0x39,0x5E,0x79,0x71,0x3D,0x76,0x06,0x1E,0x7A,0x38,0x15,0x37,0x3F,
 
-  // P    q    R    S    T    U    V    W    X    y    Z
+  //P  q*   R-   S    T-   U    V-   W--  X-   y*   Z
   0x73,0x67,0x33,0x6D,0x07,0x3E,0x3E,0x7E,0x76,0x6E,0x5B
 };
 
 unsigned char font_alphabet_lower[] = {
-  // A    b    C    d    E    F    G    h
-  0x77,0x7C,0x39,0x5e,0x79,0x71,0x3D,0x74
+  //a  b    c    d    e    F*   g    h    i-   j-   k--  l    m--  n    o
+  0x5F,0x7C,0x58,0x5E,0x7B,0x71,0x6F,0x74,0x04,0x0E,0x7A,0x30,0x14,0x54,0x5C,
+
+  //P* q    r    S*   t    u    v-   w--  X*   y    Z*
+  0x73,0x67,0x50,0x6D,0x78,0x1C,0x1c,0x2A,0x76,0x6E,0x5B
 };
 
 void segment_off(unsigned char place) {
@@ -98,16 +104,19 @@ void main(void) {
   ANSEL = 0;
 
   segment_off(0);
+  segment_put(0, 'z');
   while(1) {
-    segment_put(0, 'H');
+    //segment_put(0, 'H');
+    //Delay10KTCYx(100);
+    //segment_put(0, 'E');
+    //Delay10KTCYx(100);
+    //segment_put(0, 'L');
+    //Delay10KTCYx(100);
+    //segment_put(0, 'L');
+    //Delay10KTCYx(100);
+    //segment_put(0, 'O');
+    //Delay10KTCYx(100);
     Delay10KTCYx(100);
-    segment_put(0, 'E');
-    Delay10KTCYx(100);
-    segment_put(0, 'L');
-    Delay10KTCYx(100);
-    segment_put(0, 'L');
-    Delay10KTCYx(100);
-    segment_put(0, 'O');
-    Delay10KTCYx(100);
+    segment_off(0);
   }
 }
