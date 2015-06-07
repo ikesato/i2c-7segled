@@ -1,8 +1,8 @@
 #include <p18cxxx.h>
 #include <delays.h>
 
-#pragma config MCLRE=OFF	//MCLR PIN ENABLE BIT
-#pragma config FOSC = IRC	// 内部クロック
+#pragma config MCLRE=OFF	// MCLR PIN ENABLE BIT
+#pragma config FOSC = IRC	// Internal clock
 #pragma config LVP =   OFF	// Single-Supply ICSP Enable bit
 #pragma config WDTEN = OFF	// Watchdog Timer Enable bit
 
