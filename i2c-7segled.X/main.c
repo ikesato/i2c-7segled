@@ -1,98 +1,45 @@
 #include <p18cxxx.h>
 #include <delays.h>
+#include "seg7lcd.h"
+#include "i2c_slave.h"
 
-#pragma config MCLRE=OFF	// MCLR PIN ENABLE BIT
-#pragma config FOSC = IRC	// Internal clock
-#pragma config LVP =   OFF	// Single-Supply ICSP Enable bit
-#pragma config WDTEN = OFF	// Watchdog Timer Enable bit
+#pragma config MCLRE = OFF  // MCLR PIN ENABLE BIT
+#pragma config FOSC  = IRC  // Internal clock
+#pragma config LVP   = OFF  // Single-Supply ICSP Enable bit
+#pragma config WDTEN = OFF  // Watchdog Timer Enable bit
 
+#define T0CNT 4
+#define OVERFLOW_MSEC   (8064L)   // Timer overflow frequency [us]
+#define ONE_SEC         ((LONG)(1000L * 1000L / OVERFLOW_MSEC))  // one second of WORD value
+#define MOVE_TIME       (unsigned char)(ONE_SEC*0.8)
 
-typedef struct {
-  unsigned port : 2; // 0:Port-A 1:Port-B 2:Port-C
-  unsigned num : 4;  // Port Number 0-7
-} PortMap;
+static unsigned long gcounter = 0;     // global counter
+static unsigned char timer = 0;
+static char lcd_buffer[255];
 
-PortMap port_font_map[] = {
-  {0, 5}, // A
-  {2, 5}, // B
-  {2, 3}, // C
-  {2, 7}, // D
-  {1, 7}, // E
-  {0, 4}, // F
-  {2, 4}, // G
-  {2, 6}, // DP
-};
-
-const PortMap cathodes[] = {
-  {2, 0},
-  {2, 1},
-  {1, 5},
-  {2, 2},
-};
-
-volatile unsigned char * const ports[] = {
-  &PORTA, &PORTB, &PORTC
-};
-
-unsigned char font_digits[] = {
-  // 0     1     2     3     4     5     6     7     8     9
-  0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x27, 0x7F, 0x6F
-};
-
-// *  switch case
-// -- most difficult
-// -  more iffy
-unsigned char font_alphabet_upper[] = {
-  //A  B-   C    d*   E    F    G    H    I    J    K--  L    M--  N-   O
-  0x77,0x7F,0x39,0x5E,0x79,0x71,0x3D,0x76,0x06,0x1E,0x7A,0x38,0x15,0x37,0x3F,
-
-  //P  q*   R-   S    T-   U    V-   W--  X-   y*   Z
-  0x73,0x67,0x33,0x6D,0x07,0x3E,0x3E,0x7E,0x76,0x6E,0x5B
-};
-
-unsigned char font_alphabet_lower[] = {
-  //a  b    c    d    e    F*   g    h    i-   j-   k--  l    m--  n    o
-  0x5F,0x7C,0x58,0x5E,0x7B,0x71,0x6F,0x74,0x04,0x0E,0x7A,0x30,0x14,0x54,0x5C,
-
-  //P* q    r    S*   t    u    v-   w--  X*   y    Z*
-  0x73,0x67,0x50,0x6D,0x78,0x1C,0x1c,0x2A,0x76,0x6E,0x5B
-};
-
-void segment_off(unsigned char place) {
-  *ports[cathodes[place].port] &= ~(1U<<cathodes[place].num);
-}
-
-void segment_on(unsigned char place, unsigned char bits) {
-  unsigned char i;
-  unsigned char port_hi[3] = {0,0,0};
-  unsigned char port_lo[3] = {0,0,0};
-  unsigned char b;
-  for (i=0; i<8; i++) {
-    b = (1 << port_font_map[i].num);
-    if (bits & (1 << i)) {
-      port_hi[port_font_map[i].port] |= b;
-    } else {
-      port_lo[port_font_map[i].port] |= b;
+/**
+ * !@brief Interrupt function
+ */
+void interrupt interrupt_func(void)
+{
+  // timer interrupt
+  if (T0IF == 1) {
+    TMR0 = T0CNT;
+    T0IF = 0;
+    gcounter++;
+    if (++timer > MOVE_TIME) {
+      seg7lcd_sync();
+      timer = 0;
     }
   }
-  for (i=0; i<3; i++) {
-    *ports[i] |= port_hi[i];
-    *ports[i] &= ~port_lo[i];
-  }
-  *ports[cathodes[place].port] |= (1<<cathodes[place].num);
+
+  // I2C interrupt handler
+  //i2cs_interrupt();
 }
 
-void segment_put(unsigned char place, char c) {
-  if ('0' <= c && c <= '9') {
-    segment_on(place, font_digits[c - '0']);
-  } else if ('A' <= c && c <= 'Z') {
-    segment_on(place, font_alphabet_upper[c - 'A']);
-  } else if ('a' <= c && c <= 'z') {
-    segment_on(place, font_alphabet_lower[c - 'a']);
-  }
-}
 
-void main(void) {
+
+void init(void) {
   OSCCON = 0x52;      // 4MHZ
   TRISA = 0;
   TRISB = 0;
@@ -103,20 +50,58 @@ void main(void) {
   ANSELH = 0;
   ANSEL = 0;
 
-  segment_off(0);
-  segment_put(0, 'z');
+  // timer
+  // timer cycle => 8064 usec
+  // 8064usec is most close to generage 1sec
+  // 8064 * 124 = 999,936[usec]
+  TMR0ON = 1;
+  T08BIT = 1;
+  T0CONbits.T0PS = 0b100; // prescaler 1:32
+  TMR0 = T0CNT;
+  TMR0IP = 1;
+  TMR0IE = 1;
+  TMR0IF = 0;
+  T0CS = 0;
+  PSA = 0;
+  IPEN = 1;
+  GIEH = 1;
+  GIEL = 1;
+
+  //i2cs_init(0x20);
+}
+
+
+#if 0
+#include "seg7.h"
+void main(void) {
+  init();
+  unsigned char wait = 2;
+  seg7_off_all();
   while(1) {
-    //segment_put(0, 'H');
-    //Delay10KTCYx(100);
-    //segment_put(0, 'E');
-    //Delay10KTCYx(100);
-    //segment_put(0, 'L');
-    //Delay10KTCYx(100);
-    //segment_put(0, 'L');
-    //Delay10KTCYx(100);
-    //segment_put(0, 'O');
-    //Delay10KTCYx(100);
-    Delay10KTCYx(100);
-    segment_off(0);
+    seg7_put(3, '1');
+    Delay1KTCYx(wait);
+    seg7_off(3);
+    seg7_put(2, '2');
+    Delay1KTCYx(wait);
+    seg7_off(2);
+    seg7_put(1, '3');
+    Delay1KTCYx(wait);
+    seg7_off(1);
+    seg7_put(0, '4');
+    Delay1KTCYx(wait);
+    seg7_off(0);
+  }
+}
+#endif
+
+
+void main(void) {
+  init();
+  seg7lcd_init(lcd_buffer, sizeof(lcd_buffer));
+  seg7lcd_clear();
+  seg7lcd_puts(0, (char*)"HELLO");
+  seg7lcd_enable_move(1);
+  while(1) {
+    seg7lcd_draw();
   }
 }
