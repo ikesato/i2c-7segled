@@ -11,7 +11,7 @@
 #define T0CNT 4
 #define OVERFLOW_MSEC   (8064L)   // Timer overflow frequency [us]
 #define ONE_SEC         ((LONG)(1000L * 1000L / OVERFLOW_MSEC))  // one second of WORD value
-#define MOVE_TIME       (unsigned char)(ONE_SEC*0.8)
+#define MOVE_TIME       (unsigned char)(ONE_SEC*0.2)
 
 static unsigned long gcounter = 0;     // global counter
 static unsigned char timer = 0;
