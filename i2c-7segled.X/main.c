@@ -11,11 +11,12 @@
 #define T0CNT 4
 #define OVERFLOW_MSEC   (8064L)   // Timer overflow frequency [us]
 #define ONE_SEC         ((LONG)(1000L * 1000L / OVERFLOW_MSEC))  // one second of WORD value
-#define MOVE_TIME       (unsigned char)(ONE_SEC*0.2)
+#define BASE_TIME       (unsigned char)(ONE_SEC*0.1)
 
 static unsigned long gcounter = 0;     // global counter
 static unsigned char timer = 0;
 static char lcd_buffer[255];
+static char current_page = 0;
 
 /**
  * !@brief Interrupt function
@@ -27,14 +28,14 @@ void interrupt interrupt_func(void)
     TMR0 = T0CNT;
     T0IF = 0;
     gcounter++;
-    if (++timer > MOVE_TIME) {
+    if (++timer > BASE_TIME) {
       seg7lcd_sync();
       timer = 0;
     }
   }
 
   // I2C interrupt handler
-  //i2cs_interrupt();
+  i2cs_interrupt();
 }
 
 
@@ -67,41 +68,56 @@ void init(void) {
   GIEH = 1;
   GIEL = 1;
 
-  //i2cs_init(0x20);
-}
-
-
-#if 0
-#include "seg7.h"
-void main(void) {
-  init();
-  unsigned char wait = 2;
-  seg7_off_all();
-  while(1) {
-    seg7_put(3, '1');
-    Delay1KTCYx(wait);
-    seg7_off(3);
-    seg7_put(2, '2');
-    Delay1KTCYx(wait);
-    seg7_off(2);
-    seg7_put(1, '3');
-    Delay1KTCYx(wait);
-    seg7_off(1);
-    seg7_put(0, '4');
-    Delay1KTCYx(wait);
-    seg7_off(0);
-  }
-}
-#endif
-
-
-void main(void) {
-  init();
+  i2cs_init(0x70);
   seg7lcd_init(lcd_buffer, sizeof(lcd_buffer));
   seg7lcd_clear();
+  seg7lcd_set_move_timer(4);
   seg7lcd_puts(0, (char*)"HELLO");
   seg7lcd_enable_move(1);
+}
+
+
+void main(void) {
+  int ans;
+  char send_data;
+
+  init();
+
   while(1) {
+    ans = i2cs_proc();
+    if (ans != 0) {
+      char *recv_buff = i2cs_read_recv_buff(NULL, 0);
+      switch(recv_buff[0]) {
+      case 0x00:
+        seg7lcd_clear();
+        break;
+      case 0x01:
+        seg7lcd_set_page_num(recv_buff[1]);
+        break;
+      case 0x02:
+        seg7lcd_set_move_timer(recv_buff[1]);
+        break;
+      case 0x03:
+        seg7lcd_set_rotate_timer(recv_buff[1]);
+        break;
+      case 0x04:
+        seg7lcd_set_blink_timer(recv_buff[1]);
+        break;
+      case 0x05:
+        seg7lcd_enable_move(recv_buff[1]);
+        break;
+      case 0x06:
+        seg7lcd_enable_blink(recv_buff[1]);
+        break;
+      case 0x10:
+        current_page = recv_buff[1];
+        break;
+      case 0x11:
+        seg7lcd_puts(current_page, recv_buff);
+        break;
+      }
+    }
+
     seg7lcd_draw();
   }
 }

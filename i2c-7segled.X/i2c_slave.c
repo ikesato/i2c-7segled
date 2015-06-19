@@ -71,9 +71,6 @@ void i2cs_interrupt(void)
 /**
  * !@brief Initilize function for I2C slave
  *
- * Note: This codes use 8MHz for CPU clock.
- *       If you change clock, change SSPADD value.
- *
  * @param[in] address Slave address
  */
 void i2cs_init(int address)
@@ -81,17 +78,19 @@ void i2cs_init(int address)
   RABPU = 0;                  // Use inernal pull up register
   WPUB4 = 1;                  // pull up for SDA
   WPUB6 = 1;                  // pull up for SCL
+  TRISB4 = 1;                 // SDA as input
+  TRISB6 = 1;                 // SCL as input
   SSPSTAT= 0b10000000;        // normal speed, 100kHz.
-  SSPCON1= 0b00100110;        // Slave mode, Use SDA/SCL
+  SSPCON1= 0b00100110;        // Slave mode, Use SDA/SCL, 7bit address
   SSPCON2bits.SEN  = 1;       // Enable Clock stretching
   SSPADD = address<<1;        // Set slave address
   SSPMSK = 0b11111110;        // Set address mask
-  SSPIE = 1;                  // Enable interrupt
-  BCLIE = 1;                  // Enable MSSP(I2C) Bus Collision interrupt
+  SSPIE  = 1;                 // Enable interrupt
+  BCLIE  = 1;                 // Enable MSSP(I2C) Bus Collision interrupt
   PEIE   = 1;                 // Enable Peripheral interrupt
   GIE    = 1;                 // Enable Global interrupt
-  SSPIF = 0;                  // Clear SSP(I2C) interrupt flag
-  BCLIF = 0;                  // Clear MSSP(I2C) interrupt flag
+  SSPIF  = 0;                 // Clear SSP(I2C) interrupt flag
+  BCLIF  = 0;                 // Clear MSSP(I2C) interrupt flag
   recv_size = 0;
 }
 
