@@ -70,10 +70,10 @@ void init(void) {
 
   i2cs_init(0x70);
   seg7lcd_init(lcd_buffer, sizeof(lcd_buffer));
-  seg7lcd_clear();
   seg7lcd_set_move_timer(4);
-  seg7lcd_puts(0, (char*)"HELLO");
   seg7lcd_enable_move(1);
+  seg7lcd_clear();
+  seg7lcd_puts(0, (char*)"HELLO");
 }
 
 

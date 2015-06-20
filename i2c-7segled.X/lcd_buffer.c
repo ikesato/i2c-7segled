@@ -35,6 +35,10 @@ void lbuf_reset(void) {
   dbuf_clear();
 }
 
+void lbuf_clear(void) {
+  dbuf_clear();
+}
+
 void lbuf_set_page_num(unsigned char page_num) {
   lbuf.page_num = page_num;
 }

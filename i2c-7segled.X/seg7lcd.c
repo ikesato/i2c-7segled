@@ -7,8 +7,13 @@ void seg7lcd_init(char *buffer, unsigned char buffer_size) {
   seg7_off_all();
 }
 
-void seg7lcd_clear(void) {
+void seg7lcd_reset(void) {
   lbuf_reset();
+  seg7_off_all();
+}
+
+void seg7lcd_clear(void) {
+  lbuf_clear();
   seg7_off_all();
 }
 

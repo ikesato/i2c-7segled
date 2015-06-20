@@ -2,6 +2,7 @@
 #define _SEG7LCD_H_
 
 void seg7lcd_init(char *buffer, unsigned char buffer_size);
+void seg7lcd_reset(void);
 void seg7lcd_clear(void);
 void seg7lcd_set_page_num(unsigned char page_num);
 void seg7lcd_set_rotate_timer(unsigned char rotate_time);

@@ -7,6 +7,7 @@
 
 void lbuf_init(char *buffer, unsigned char buffer_size);
 void lbuf_reset(void);
+void lbuf_clear(void);
 void lbuf_set_page_num(unsigned char page_num);
 void lbuf_set_rotate_timer(unsigned char rotate_time);
 void lbuf_set_move_timer(unsigned char move_time);
