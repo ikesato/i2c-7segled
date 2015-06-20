@@ -86,24 +86,27 @@ void main(void) {
       char *recv_buff = i2cs_read_recv_buff(NULL, 0);
       switch(recv_buff[0]) {
       case 0x00:
-        seg7lcd_clear();
+        seg7lcd_reset();
         break;
       case 0x01:
-        seg7lcd_set_page_num(recv_buff[1]);
+        seg7lcd_clear();
         break;
       case 0x02:
-        seg7lcd_set_move_timer(recv_buff[1]);
+        seg7lcd_set_page_num(recv_buff[1]);
         break;
       case 0x03:
-        seg7lcd_set_rotate_timer(recv_buff[1]);
+        seg7lcd_set_move_timer(recv_buff[1]);
         break;
       case 0x04:
-        seg7lcd_set_blink_timer(recv_buff[1]);
+        seg7lcd_set_rotate_timer(recv_buff[1]);
         break;
       case 0x05:
-        seg7lcd_enable_move(recv_buff[1]);
+        seg7lcd_set_blink_timer(recv_buff[1]);
         break;
       case 0x06:
+        seg7lcd_enable_move(recv_buff[1]);
+        break;
+      case 0x07:
         seg7lcd_enable_blink(recv_buff[1]);
         break;
       case 0x10:
