@@ -25,8 +25,8 @@ void seg7lcd_set_rotate_timer(unsigned char rotate_time) {
   lbuf_set_rotate_timer(rotate_time);
 }
 
-void seg7lcd_set_move_timer(unsigned char move_time) {
-  lbuf_set_move_timer(move_time);
+void seg7lcd_set_scroll_timer(unsigned char scroll_time) {
+  lbuf_set_scroll_timer(scroll_time);
 }
 
 void seg7lcd_set_blink_timer(unsigned char blink_time) {
@@ -37,8 +37,8 @@ void seg7lcd_enable_blink(unsigned char enabled) {
   lbuf_enable_blink(enabled);
 }
 
-void seg7lcd_enable_move(unsigned char enabled) {
-  lbuf_enable_move(enabled);
+void seg7lcd_enable_scroll(unsigned char enabled) {
+  lbuf_enable_scroll(enabled);
 }
 
 void seg7lcd_sync(void) {

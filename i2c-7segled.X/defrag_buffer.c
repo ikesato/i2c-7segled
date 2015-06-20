@@ -48,7 +48,7 @@ char dbuf_put(unsigned char page_no, char* buffer) {
     SIZET next_page = dbuf_pages[page_no+1].offset;
     if (next_page < next_pos) {
       diff = next_pos - next_page;
-      // move right
+      // scroll right
       struct DbufPage *plast = &dbuf_pages[DBUF_PAGE_SIZE-1];
       pos = plast->offset + plast->size;
       for (; (SSIZET)next_page <= (SSIZET)pos; pos--) {
@@ -63,7 +63,7 @@ char dbuf_put(unsigned char page_no, char* buffer) {
         dbuf_pages[i].offset += diff;
       }
     } else if (next_page > next_pos) {
-      // move left
+      // scroll left
       diff = next_page - next_pos;
       struct DbufPage *pnext = &dbuf_pages[page_no+1];
       struct DbufPage *plast = &dbuf_pages[DBUF_PAGE_SIZE-1];

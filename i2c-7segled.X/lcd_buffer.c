@@ -8,10 +8,10 @@ struct Lbuf {
   char page_num;
   char rotate_time;
   char rotate_timer;
-  char move_enabled;
-  char move_time;
-  char move_timer;
-  char move_pos;
+  char scroll_enabled;
+  char scroll_time;
+  char scroll_timer;
+  char scroll_pos;
   char blink_enabled;
   char blink_time;
   char blink_timer;
@@ -47,8 +47,8 @@ void lbuf_set_rotate_timer(unsigned char rotate_time) {
   lbuf.rotate_time = rotate_time;
 }
 
-void lbuf_set_move_timer(unsigned char move_time) {
-  lbuf.move_time = move_time;
+void lbuf_set_scroll_timer(unsigned char scroll_time) {
+  lbuf.scroll_time = scroll_time;
 }
 
 void lbuf_set_blink_timer(unsigned char blink_time) {
@@ -59,17 +59,17 @@ void lbuf_enable_blink(unsigned char enabled) {
   lbuf.blink_enabled = enabled;
 }
 
-void lbuf_enable_move(unsigned char enabled) {
-  lbuf.move_enabled = enabled;
+void lbuf_enable_scroll(unsigned char enabled) {
+  lbuf.scroll_enabled = enabled;
 }
 
 void lbuf_sync(void) {
-  if (lbuf.move_enabled) {
-    if (lbuf.move_timer >= lbuf.move_time) {
-      lbuf.move_timer = 0;
-      lbuf.move_pos++;
+  if (lbuf.scroll_enabled) {
+    if (lbuf.scroll_timer >= lbuf.scroll_time) {
+      lbuf.scroll_timer = 0;
+      lbuf.scroll_pos++;
     } else {
-      lbuf.move_timer++;
+      lbuf.scroll_timer++;
     }
   }
   if (lbuf.page_num > 1) {
@@ -79,8 +79,8 @@ void lbuf_sync(void) {
       if (lbuf.current_page >= lbuf.page_num) {
         lbuf.current_page = 0;
       }
-      lbuf.move_timer = 0;
-      lbuf.move_pos = -1;
+      lbuf.scroll_timer = 0;
+      lbuf.scroll_pos = -1;
     } else {
       lbuf.rotate_timer++;
     }
@@ -118,12 +118,12 @@ void lbuf_draw(void) {
     return;
   }
 
-  if (lbuf.move_enabled) {
+  if (lbuf.scroll_enabled) {
     pos = -(LBUF_LCD_LEN-1);
-    pos += lbuf.move_pos;
+    pos += lbuf.scroll_pos;
     if (slen < pos) {
-      pos -= lbuf.move_pos;
-      lbuf.move_pos = 0;
+      pos -= lbuf.scroll_pos;
+      lbuf.scroll_pos = 0;
     }
   } else {
     if (slen > LBUF_LCD_LEN)
