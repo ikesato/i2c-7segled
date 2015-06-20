@@ -1,12 +1,10 @@
 #include <p18cxxx.h>
-//#include <GenericTypeDefs.h>
-//#include <pic.h>
 #include <htc.h>
 #include <string.h>
 #include "i2c_slave.h"
 
-#define SEND_BUFF_LEN 8                  // Send buffer size
-#define RECV_BUFF_LEN 8                  // Receive buffer size
+#define SEND_BUFF_LEN 1                  // Send buffer size
+#define RECV_BUFF_LEN 200                // Receive buffer size//TODO: extend buffer size
 
 unsigned char recv_buff[RECV_BUFF_LEN];  // Send buffer
 unsigned char send_buff[SEND_BUFF_LEN];  // Receive bufer
