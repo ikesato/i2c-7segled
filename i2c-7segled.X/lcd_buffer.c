@@ -68,7 +68,7 @@ void lbuf_sync(void) {
       lbuf.move_timer++;
     }
   }
-  if (lbuf.page_num > 0) {
+  if (lbuf.page_num > 1) {
     if (lbuf.rotate_timer >= lbuf.rotate_time) {
       lbuf.rotate_timer = 0;
       lbuf.current_page++;
@@ -80,6 +80,8 @@ void lbuf_sync(void) {
     } else {
       lbuf.rotate_timer++;
     }
+  } else {
+      lbuf.current_page = 0;
   }
   if (lbuf.blink_enabled) {
     if (lbuf.blink_timer >= lbuf.blink_time) {
@@ -166,6 +168,7 @@ void lbuf_print(void) {
   }
   printf("|");
   printf("\r");
+  printf("\n");
   fflush(stdout);
 }
 #endif
