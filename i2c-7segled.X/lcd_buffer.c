@@ -144,11 +144,15 @@ static char *lbuf_format_str(char *in, char *out, unsigned char out_size) {
   unsigned char i,j;
   for (i=j=0; in[i] != '\0'; i++, j++) {
     if (in[i] == '.') {
+      char c;
       if (i > 0 && in[i-1] != '.') {
         j--;
+        c = in[i-1];
+      } else {
+        c = 0x20;
       }
       if (j < out_size-1)
-        out[j] |= 0x80;
+        out[j] = 0x80 | c;
     } else {
       if (j < out_size-1)
         out[j] = in[i];

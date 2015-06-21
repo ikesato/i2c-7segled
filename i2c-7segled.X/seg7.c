@@ -91,7 +91,7 @@ void seg7_on(unsigned char place, unsigned char bits) {
 void seg7_put(unsigned char place, char c) {
   unsigned char dot = c & 0x80;
   c &= 0x7f;
-  if (c == ' ') {
+  if (c == ' ' && dot == 0) {
     seg7_off(place);
   } else if ('0' <= c && c <= '9') {
     seg7_on(place, font_digits[c - '0'] | dot);
@@ -99,7 +99,7 @@ void seg7_put(unsigned char place, char c) {
     seg7_on(place, font_alphabet_upper[c - 'A'] | dot);
   } else if ('a' <= c && c <= 'z') {
     seg7_on(place, font_alphabet_lower[c - 'a'] | dot);
-  } else if (c == 0x80) {
+  } else if (dot == 0x80) {
     seg7_on(place, dot);
   }
 }
