@@ -1,0 +1,131 @@
+#!/bin/bash
+
+I2CSET="/usr/sbin/i2cset -y 1"
+ADDR=0x70
+
+command() {
+    local cmd=$1
+    shift
+    case $cmd in
+        reset) $I2CSET $ADDR 0x00 c ;;
+        clear) $I2CSET $ADDR 0x01 c ;;
+        set_page_num)
+            local data=`check_range 1 8 $1`
+            $I2CSET $ADDR 0x02 $data b
+            ;;
+        set_scroll_speed)
+            local data=`check_range 0 255 $1`
+            $I2CSET $ADDR 0x03 $data b
+            ;;
+        set_flip_speed)
+            local data=`check_range 0 255 $1`
+            $I2CSET $ADDR 0x04 $data b
+            ;;
+        set_blink_speed)
+            local data=`check_range 0 255 $1`
+            $I2CSET $ADDR 0x05 $data b
+            ;;
+        enable_scroll)
+            local data=`check_boolean $1`
+            $I2CSET $ADDR 0x06 $data i
+            ;;
+        enable_blink)
+            local data=`check_boolean $1`
+            $I2CSET $ADDR 0x07 $data w
+            ;;
+        set_current_page)
+            local data=`check_range 0 7 $1`
+            $I2CSET $ADDR 0x10 $data b
+            ;;
+        puts)
+            local data=`makestr $*`
+            $I2CSET $ADDR 0x11 $data i
+            ;;
+        make_links)
+            make_links
+            ;;
+        *)
+            echo "unsupported command [$CMD]">&2
+            ;;
+    esac
+}
+
+check_range() {
+    local start=$1
+    local end=$2
+    local v=$3
+    if [[ "$v" =~ ^[0-9]+$ ]] ; then
+        :
+    else
+        echo "Invalid value for [$v]">&2
+        echo $start
+        return
+    fi
+    if [ "$v" -lt "$start"  -o "$v" -gt "$end" ] ; then
+        echo "Invalid value for [$v]">&2
+        echo $start
+        return
+    fi
+    echo $v
+}
+
+check_boolean() {
+    local v=$1
+    if [[ "$v" =~ ^[0-9]+$ ]] ; then
+        :
+    else
+        echo "Invalid value for [$v]">&2
+        echo "0"
+        return
+    fi
+    if [ "$v" -lt 0  -o "$v" -gt 1 ] ; then
+        echo "Invalid value for [$v]">&2
+        echo "0"
+        return
+    fi
+    echo $v
+}
+
+makestr() {
+    local str=$1
+    for (( i=0; i<${#str}; i++ )); do
+        local c=${str:$i:1}
+        if [[ "$c" =~ ^[0-9\ \_\|a-zA-Z\.\-]+$ ]] ; then
+            :
+        else
+            echo "Unsupported character for [$c]">&2
+        c=' '
+        fi
+        LC_CTYPE=C printf "0x%X " "'$c"
+    done
+    echo "0x00"
+}
+
+make_links() {
+    ln -s 7seg_command 7seg_reset
+    ln -s 7seg_command 7seg_clear
+    ln -s 7seg_command 7seg_set_page_num
+    ln -s 7seg_command 7seg_set_scroll_speed
+    ln -s 7seg_command 7seg_set_flip_speed
+    ln -s 7seg_command 7seg_set_blink_speed
+    ln -s 7seg_command 7seg_enable_scroll
+    ln -s 7seg_command 7seg_enable_blink
+    ln -s 7seg_command 7seg_set_current_page
+    ln -s 7seg_command 7seg_puts
+}
+
+CMD=`basename $0`
+case $CMD in
+    7seg_reset)             command reset $* ;;
+    7seg_clear)             command clear $* ;;
+    7seg_set_page_num)      command set_page_num $* ;;
+    7seg_set_scroll_speed)  command set_scroll_speed $* ;;
+    7seg_set_flip_speed)    command set_flip_speed $* ;;
+    7seg_set_blink_speed)   command set_blink_speed $* ;;
+    7seg_enable_scroll)     command enable_scroll $* ;;
+    7seg_enable_blink)      command enable_blink $* ;;
+    7seg_set_current_page)  command set_current_page $* ;;
+    7seg_puts)              command puts $* ;;
+    7seg_command)           command $* ;;
+    *) ;;
+esac
