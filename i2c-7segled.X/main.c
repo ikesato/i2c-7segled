@@ -113,7 +113,7 @@ void main(void) {
         current_page = recv_buff[1];
         break;
       case 0x11:
-        seg7lcd_puts(current_page, recv_buff);
+        seg7lcd_puts(current_page, &recv_buff[1]);
         break;
       }
     }
