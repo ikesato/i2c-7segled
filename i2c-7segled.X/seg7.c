@@ -58,6 +58,10 @@ static unsigned char font_alphabet_lower[] = {
   0x73,0x67,0x50,0x6D,0x78,0x1C,0x1c,0x2A,0x76,0x6E,0x5B
 };
 
+#define FONT_HYPHEN       0x40 // '-'
+#define FONT_UNDER_SCORE  0x08 // '_'
+#define FONT_PIPE         0x30 // '|'
+
 void seg7_off(unsigned char place) {
   *ports[cathodes[place].port] &= ~(1U<<cathodes[place].num);
 }
@@ -99,6 +103,12 @@ void seg7_put(unsigned char place, char c) {
     seg7_on(place, font_alphabet_upper[c - 'A'] | dot);
   } else if ('a' <= c && c <= 'z') {
     seg7_on(place, font_alphabet_lower[c - 'a'] | dot);
+  } else if (c == '-') {
+    seg7_on(place, FONT_HYPHEN | dot);
+  } else if (c == '_') {
+    seg7_on(place, FONT_UNDER_SCORE | dot);
+  } else if (c == '|') {
+    seg7_on(place, FONT_PIPE | dot);
   } else if (dot == 0x80) {
     seg7_on(place, dot);
   }
