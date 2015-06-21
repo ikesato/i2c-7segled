@@ -95,13 +95,13 @@ void main(void) {
         seg7lcd_set_page_num(recv_buff[1]);
         break;
       case 0x03:
-        seg7lcd_set_scroll_timer(recv_buff[1]);
+        seg7lcd_set_scroll_speed(recv_buff[1]);
         break;
       case 0x04:
-        seg7lcd_set_rotate_timer(recv_buff[1]);
+        seg7lcd_set_rotate_speed(recv_buff[1]);
         break;
       case 0x05:
-        seg7lcd_set_blink_timer(recv_buff[1]);
+        seg7lcd_set_blink_speed(recv_buff[1]);
         break;
       case 0x06:
         seg7lcd_enable_scroll(recv_buff[1]);

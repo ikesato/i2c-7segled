@@ -6,14 +6,14 @@
 
 struct Lbuf {
   char page_num;
-  char rotate_time;
+  char rotate_speed;
   char rotate_timer;
   char scroll_enabled;
-  char scroll_time;
+  char scroll_speed;
   char scroll_timer;
   char scroll_pos;
   char blink_enabled;
-  char blink_time;
+  char blink_speed;
   char blink_timer;
   char blink_on;
   char current_page;
@@ -43,16 +43,16 @@ void lbuf_set_page_num(unsigned char page_num) {
   lbuf.page_num = page_num;
 }
 
-void lbuf_set_rotate_timer(unsigned char rotate_time) {
-  lbuf.rotate_time = rotate_time;
+void lbuf_set_rotate_speed(unsigned char rotate_speed) {
+  lbuf.rotate_speed = rotate_speed;
 }
 
-void lbuf_set_scroll_timer(unsigned char scroll_time) {
-  lbuf.scroll_time = scroll_time;
+void lbuf_set_scroll_speed(unsigned char scroll_speed) {
+  lbuf.scroll_speed = scroll_speed;
 }
 
-void lbuf_set_blink_timer(unsigned char blink_time) {
-  lbuf.blink_time = blink_time;
+void lbuf_set_blink_speed(unsigned char blink_speed) {
+  lbuf.blink_speed = blink_speed;
 }
 
 void lbuf_enable_blink(unsigned char enabled) {
@@ -65,7 +65,7 @@ void lbuf_enable_scroll(unsigned char enabled) {
 
 void lbuf_sync(void) {
   if (lbuf.scroll_enabled) {
-    if (lbuf.scroll_timer >= lbuf.scroll_time) {
+    if (lbuf.scroll_timer >= lbuf.scroll_speed) {
       lbuf.scroll_timer = 0;
       lbuf.scroll_pos++;
     } else {
@@ -73,7 +73,7 @@ void lbuf_sync(void) {
     }
   }
   if (lbuf.page_num > 1) {
-    if (lbuf.rotate_timer >= lbuf.rotate_time) {
+    if (lbuf.rotate_timer >= lbuf.rotate_speed) {
       lbuf.rotate_timer = 0;
       lbuf.current_page++;
       if (lbuf.current_page >= lbuf.page_num) {
@@ -88,7 +88,7 @@ void lbuf_sync(void) {
       lbuf.current_page = 0;
   }
   if (lbuf.blink_enabled) {
-    if (lbuf.blink_timer >= lbuf.blink_time) {
+    if (lbuf.blink_timer >= lbuf.blink_speed) {
       lbuf.blink_timer = 0;
       lbuf.blink_on = !lbuf.blink_on;
     } else {

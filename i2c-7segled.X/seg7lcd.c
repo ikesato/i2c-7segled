@@ -21,16 +21,16 @@ void seg7lcd_set_page_num(unsigned char page_num) {
   lbuf_set_page_num(page_num);
 }
 
-void seg7lcd_set_rotate_timer(unsigned char rotate_time) {
-  lbuf_set_rotate_timer(rotate_time);
+void seg7lcd_set_rotate_speed(unsigned char rotate_speed) {
+  lbuf_set_rotate_speed(rotate_speed);
 }
 
-void seg7lcd_set_scroll_timer(unsigned char scroll_time) {
-  lbuf_set_scroll_timer(scroll_time);
+void seg7lcd_set_scroll_speed(unsigned char scroll_speed) {
+  lbuf_set_scroll_speed(scroll_speed);
 }
 
-void seg7lcd_set_blink_timer(unsigned char blink_time) {
-  lbuf_set_blink_timer(blink_time);
+void seg7lcd_set_blink_speed(unsigned char blink_speed) {
+  lbuf_set_blink_speed(blink_speed);
 }
 
 void seg7lcd_enable_blink(unsigned char enabled) {
