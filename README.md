@@ -1,29 +1,34 @@
+概要
+====
 
+i2c を使用した7セグメントLED表示器です。  
+Raspberry PI は i2c が利用できるので Raspberry PI のコマンドラインから使用できます。  
 
 
 ### パーツ
 
-- PIC18F14K50
+- PIC18F14K50 (SOIC)
 
-- TD62083
+- TD62083 (SOIC)
 
 - ダイナミック接続４桁高輝度赤色７セグメントＬＥＤ表示器　カソードコモン　カソード共通接続  
  http://akizukidenshi.com/catalog/g/gI-03955/
 
 - チップ抵抗  
- 270Ω 1/4W
+ 270Ω  1/4W x 8  
 
 - チップコンデンサ  
- 0.1uF
- 0.22uF
+ 0.1uF  
+ 0.22uF  
 
 
-I2C通信仕様
-===========
+### I2C通信仕様
 
+- 通信速度 100kHz
+- i2C スレーブ
 - ライト要求 (Master -> Slaveへのライト要求) のみ
 
-### Address Map
+### コマンド
 
 | address | data   | description |
 |---------|--------|-------------|
