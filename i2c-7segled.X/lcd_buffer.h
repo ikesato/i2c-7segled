@@ -9,7 +9,7 @@ void lbuf_init(char *buffer, unsigned char buffer_size);
 void lbuf_reset(void);
 void lbuf_clear(void);
 void lbuf_set_page_num(unsigned char page_num);
-void lbuf_set_rotate_speed(unsigned char rotate_speed);
+void lbuf_set_flip_speed(unsigned char flip_speed);
 void lbuf_set_scroll_speed(unsigned char scroll_speed);
 void lbuf_set_blink_speed(unsigned char blink_speed);
 void lbuf_enable_blink(unsigned char enabled);

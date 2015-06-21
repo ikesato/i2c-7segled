@@ -6,8 +6,8 @@
 
 struct Lbuf {
   char page_num;
-  char rotate_speed;
-  char rotate_timer;
+  char flip_speed;
+  char flip_timer;
   char scroll_enabled;
   char scroll_speed;
   char scroll_timer;
@@ -43,8 +43,8 @@ void lbuf_set_page_num(unsigned char page_num) {
   lbuf.page_num = page_num;
 }
 
-void lbuf_set_rotate_speed(unsigned char rotate_speed) {
-  lbuf.rotate_speed = rotate_speed;
+void lbuf_set_flip_speed(unsigned char flip_speed) {
+  lbuf.flip_speed = flip_speed;
 }
 
 void lbuf_set_scroll_speed(unsigned char scroll_speed) {
@@ -73,8 +73,8 @@ void lbuf_sync(void) {
     }
   }
   if (lbuf.page_num > 1) {
-    if (lbuf.rotate_timer >= lbuf.rotate_speed) {
-      lbuf.rotate_timer = 0;
+    if (lbuf.flip_timer >= lbuf.flip_speed) {
+      lbuf.flip_timer = 0;
       lbuf.current_page++;
       if (lbuf.current_page >= lbuf.page_num) {
         lbuf.current_page = 0;
@@ -82,7 +82,7 @@ void lbuf_sync(void) {
       lbuf.scroll_timer = 0;
       lbuf.scroll_pos = -1;
     } else {
-      lbuf.rotate_timer++;
+      lbuf.flip_timer++;
     }
   } else {
       lbuf.current_page = 0;

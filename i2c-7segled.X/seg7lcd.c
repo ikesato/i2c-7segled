@@ -21,8 +21,8 @@ void seg7lcd_set_page_num(unsigned char page_num) {
   lbuf_set_page_num(page_num);
 }
 
-void seg7lcd_set_rotate_speed(unsigned char rotate_speed) {
-  lbuf_set_rotate_speed(rotate_speed);
+void seg7lcd_set_flip_speed(unsigned char flip_speed) {
+  lbuf_set_flip_speed(flip_speed);
 }
 
 void seg7lcd_set_scroll_speed(unsigned char scroll_speed) {
