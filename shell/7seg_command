@@ -41,6 +41,12 @@ command() {
             local data=`makestr $*`
             $I2CSET $ADDR 0x11 $data i
             ;;
+        puts_from_stdin)
+            while read l ; do
+                local data=`makestr $l`
+                $I2CSET $ADDR 0x11 $data i
+            done
+            ;;
         make_links)
             make_links
             ;;
@@ -112,6 +118,7 @@ make_links() {
     ln -s 7seg_command 7seg_enable_blink
     ln -s 7seg_command 7seg_set_current_page
     ln -s 7seg_command 7seg_puts
+    ln -s 7seg_command 7seg_puts_from_stdin
 }
 
 CMD=`basename $0`
@@ -126,6 +133,7 @@ case $CMD in
     7seg_enable_blink)      command enable_blink $* ;;
     7seg_set_current_page)  command set_current_page $* ;;
     7seg_puts)              command puts $* ;;
+    7seg_puts_from_stdin)   command puts_from_stdin ;;
     7seg_command)           command $* ;;
     *) ;;
 esac
