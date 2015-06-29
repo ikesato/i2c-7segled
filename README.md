@@ -10,9 +10,11 @@
 
 ### パーツ
 
-- PIC18F14K50 (SOIC)
+- PIC18F14K50 (SOIC)  
+ 1.25mm ピッチ
 
-- TD62083 (SOIC)
+- TD62083 (SOIC)  
+ 1.25mm ピッチ
 
 - ダイナミック接続４桁高輝度赤色７セグメントＬＥＤ表示器　カソードコモン　カソード共通接続  
  http://akizukidenshi.com/catalog/g/gI-03955/
@@ -52,15 +54,34 @@
 
 ### 回路図
 
-![回路図](doc/eagle/i2c-7segled-SOIC-schematic.png)
+![回路図](./doc/eagle/i2c-7segled-SOIC-schematic.png)
+
+[EAGLE ファイル](./doc/eagle/i2c-7segled-SOIC.sch)
 
 ### ボード
 
-![ボード](doc/eagle/i2c-7segled-SOIC-board.png)
+![ボード](./doc/eagle/i2c-7segled-SOIC-board.png)
+
+[EAGLE ファイル](./doc/eagle/i2c-7segled-SOIC.brd)
 
 ### Unix シェルでの使用方法
 
 shell ディレクトリにあるシェルコマンド利用することで簡単に LED を制御できます。
+
+|コマンド              |引数  |説明                   |
+|----------------------|------|-----------------------|
+|7seg_clear            |なし  |7seg LCD をクリアします|
+|7seg_enable_blink     |0..1  |点滅設定 (0:disable 1:enable)|
+|7seg_enable_scroll    |0..1  |スクロール設定 (0:disable 1:enable)|
+|7seg_puts             |文字列|描画文字列を指定|
+|7seg_puts_from_stdin  |なし  |文字列を標準入力からリードして描画します。CTRL-C で中断するまで続けます。|
+|7seg_reset            |なし  |リセット、内部変数ふくめ全て初期化します|
+|7seg_set_blink_speed  |0..255| 点滅速度設定 (0.1秒 * (指定値+1))  |
+|7seg_set_current_page |0..7  | カレントページ設定 |
+|7seg_set_flip_speed   |0..255| ページ切り替え速度設定 (0.1秒 * (指定値+1))  |
+|7seg_set_page_num     |1..8  | 最大ページ数設定  |
+|7seg_set_scroll_speed |0..255| スクロール速度設定 (0.1秒 * (指定値+1))  |
+
 
 例
 ```````````````````
